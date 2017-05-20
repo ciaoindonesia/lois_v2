@@ -314,6 +314,18 @@ var app;
             report.getPartnerReport = function (data, query) {
                 return app.http.post('/lois/api/reportData/getPartnerReport?query=' + JSON.stringify(query), JSON.stringify(data));
             };
+            report.getUnreturned = function (query) {
+                return app.http.get('/lois/api/reportData/getUnreturned?query=' + JSON.stringify(query));
+            };
+            report.getUnreturnedReport = function (data, query) {
+                return app.http.post('/lois/api/reportData/getUnreturnedReport?query= ' + JSON.stringify(query), JSON.stringify(data));
+            };
+            report.getUndelivered = function (query) {
+                return app.http.get('/lois/api/reportData/getUndelivered?query=' + JSON.stringify(query));
+            };
+            report.getUndeliveredReport = function (data, query) {
+                return app.http.post('/lois/api/reportData/getUndeliveredReport?query= ' + JSON.stringify(query), JSON.stringify(data));
+            };
             return report;
         }());
         api.report = report;
@@ -403,6 +415,20 @@ var app;
                     "responseType": "arraybuffer"
                 };
                 return app.http.post('https://lois.limassentosa.co.id/index.php/invoice', JSON.stringify(data), config);
+            };
+            reportPrint.printUnreturned = function (data) {
+                var config = {
+                    "headers": { "content-type": "application/x-www-form-urlencoded; charset=UTF-8" },
+                    "responseType": "arraybuffer"
+                };
+                return app.http.post('https://lois.limassentosa.co.id/index.php/unreturned', JSON.stringify(data), config);
+            };
+            reportPrint.printUndelivered = function (data) {
+                var config = {
+                    "headers": { "content-type": "application/x-www-form-urlencoded; charset=UTF-8" },
+                    "responseType": "arraybuffer"
+                };
+                return app.http.post('https://lois.limassentosa.co.id/index.php/undelivered', JSON.stringify(data), config);
             };
             return reportPrint;
         }());

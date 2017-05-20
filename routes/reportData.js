@@ -46,6 +46,7 @@ router.post(config.api + 'reportData/getDeliveriesReport', auth.isAuthenticated,
         res.status(500).send(error.message);
     });
 });
+
 router.get(config.api + 'reportData/getReturns', auth.isAuthenticated, function (req, res) {
     var query = JSON.parse(req.query['query']);
     query['region'] = req.session.user.location.region;
@@ -202,6 +203,46 @@ router.get(config.api + 'reportData/getPartner', auth.isAuthenticated, function 
 router.post(config.api + 'reportData/getPartnerReport', auth.isAuthenticated, function (req, res) {
     var query = JSON.parse(req.query['query']);
     controller.getPartnerReport(req.body, query, req.session.user).then(function (result) {
+        res.status(200).send(result);
+    }).catch(function (error) {
+        res.status(500).send(error.message);
+    });
+});
+
+router.get(config.api + 'reportData/getUnreturned', auth.isAuthenticated, function (req, res) {
+    var query = JSON.parse(req.query['query']);
+    query['region'] = req.session.user.location.region;
+
+    controller.getUnreturned(query).then(function (result) {
+        res.status(200).send(result);
+    }).catch(function (error) {
+        res.status(500).send(error.message);
+    });
+});
+
+router.post(config.api + 'reportData/getUnreturnedReport', auth.isAuthenticated, function (req, res) {
+    var query = JSON.parse(req.query['query']);
+    controller.getUnreturnedReport(req.body, query, req.session.user).then(function (result) {
+        res.status(200).send(result);
+    }).catch(function (error) {
+        res.status(500).send(error.message);
+    });
+});
+
+router.get(config.api + 'reportData/getUndelivered', auth.isAuthenticated, function (req, res) {
+    var query = JSON.parse(req.query['query']);
+    query['region'] = req.session.user.location.region;
+
+    controller.getUndelivered(query).then(function (result) {
+        res.status(200).send(result);
+    }).catch(function (error) {
+        res.status(500).send(error.message);
+    });
+});
+
+router.post(config.api + 'reportData/getUndeliveredReport', auth.isAuthenticated, function (req, res) {
+    var query = JSON.parse(req.query['query']);
+    controller.getUndeliveredReport(req.body, query, req.session.user).then(function (result) {
         res.status(200).send(result);
     }).catch(function (error) {
         res.status(500).send(error.message);

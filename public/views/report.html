@@ -17,7 +17,7 @@
                     </div>
                     <ul class="nav nav-tabs pull-right in" id="myTab">
                         <li ng-class="{'active': ctrl.activeReport == report.name}" ng-repeat="report in ctrl.reports">
-                            <a data-toggle="tab" href="#" ng-click="ctrl.onReportChange(report.name)"><span class="hidden-mobile hidden-tablet">{{report.name}}</span></a>
+                            <a data-toggle="tab" style="font-size: 9px;" href="#" ng-click="ctrl.onReportChange(report.name)">{{report.name}}</a>
                         </li>
                     </ul>
                 </header>
@@ -729,6 +729,11 @@
                                                 <section class="col col-sm-12 col-md-12 col-lg-6">
                                                     <label class="input">
                                                         <input type="text" placeholder="No mobil" ng-model="ctrl.filters.vehicleNumber" />
+                                                    </label>
+                                                </section>
+                                                <section class="col col-sm-12 col-md-12 col-lg-12" ng-if="ctrl.printNoPrice">
+                                                    <label class="input">
+                                                        <input type="text" placeholder="Alamat" ng-model="ctrl.noPriceAddress" />
                                                     </label>
                                                 </section>
                                             </div>
@@ -1498,6 +1503,272 @@
                                                 <td> {{entity.cost.expedition | currency: 'Rp ' : 2}} </td>
                                                 <td> {{entity.notes.partner}}</td>
                                                 <td> {{entity.cost.worker | currency: 'Rp ' : 2}} </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div ng-show="ctrl.activeReport == 'Belum Retur'">
+                                <div class="widget-body-toolbar" ng-show="ctrl.showToolbar">
+                                    <form class="smart-form">
+                                        <legend>Filter data</legend>
+                                        <fieldset>
+                                            <div class="row">
+                                                <section class="col col-sm-12 col-md-12 col-lg-3">
+                                                    <label class="input">
+                                                        <input type="text" placeholder="Spb" ng-model="ctrl.filters.spbNumber" />
+                                                    </label>
+                                                </section>
+                                                <section class="col col-sm-12 col-md-12 col-lg-3">
+                                                    <label class="input">
+                                                        <input type="text"
+                                                               ng-model="ctrl.filters.paymentType"
+                                                               placeholder="Cara bayar"
+                                                               uib-typeahead="data as data.name for data in ctrl.suggest('paymentType', $viewValue)"
+                                                               typeahead-min-length="2"
+                                                               typeahead-loading="paymentTypeFilter" class="form-control" />
+                                                        <i ng-show="paymentTypeFilter" class="glyphicon glyphicon-refresh"></i>
+                                                    </label>
+                                                </section>
+                                                <section class="col col-sm-12 col-md-12 col-lg-3">
+                                                    <label class="input">
+                                                        <input type="text"
+                                                               ng-model="ctrl.filters.destination"
+                                                               placeholder="Tujuan"
+                                                               uib-typeahead="data as data.name for data in ctrl.suggest('location', $viewValue)"
+                                                               typeahead-min-length="2"
+                                                               typeahead-loading="destinationFilter" class="form-control" />
+                                                        <i ng-show="destinationFilter" class="glyphicon glyphicon-refresh"></i>
+                                                    </label>
+                                                </section>
+                                                <section class="col col-sm-12 col-md-12 col-lg-3">
+                                                    <label class="input">
+                                                        <input type="text"
+                                                               ng-model="ctrl.filters.regionSource"
+                                                               placeholder="Regional Asal"
+                                                               uib-typeahead="data as data.name for data in ctrl.suggest('region', $viewValue)"
+                                                               typeahead-min-length="2"
+                                                               typeahead-loading="regionSourceFilter" class="form-control" />
+                                                        <i ng-show="regionSourceFilter" class="glyphicon glyphicon-refresh"></i>
+                                                    </label>
+                                                </section>
+                                                <section class="col col-sm-12 col-md-12 col-lg-4">
+                                                    <label class="input">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                            <input datepicker class="form-control" placeholder="Tanggal retur"
+                                                                   id="return-date" type="text" ng-model="ctrl.filters.returnDate" />
+                                                        </div>
+                                                    </label>
+                                                </section>
+                                                <section class="col col-sm-12 col-md-12 col-lg-4">
+                                                    <label class="input">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                            <input datepicker class="form-control" placeholder="Dari Tanggal"
+                                                                   id="from-transaction-date-return" type="text" ng-model="ctrl.filters.from" />
+                                                        </div>
+                                                    </label>
+                                                </section>
+                                                <section class="col col-sm-12 col-md-12 col-lg-4">
+                                                    <label class="input">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                            <input datepicker class="form-control" placeholder="Sampai Tanggal"
+                                                                   id="to-transaction-date-return" type="text" ng-model="ctrl.filters.to" />
+                                                        </div>
+                                                    </label>
+                                                </section>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <div class="widget-body-toolbar">
+                                    <div class="row">
+                                        <div class="col-xs-9 col-sm-5 col-md-5 col-lg-6">
+                                            <a href="#" class="btn btn-default" style="color: black;" ng-click="ctrl.filter()">
+                                                <i class="fa fa-search"></i> Cari
+                                            </a>
+                                            <a href="#" class="btn btn-default" style="color: black;" ng-click="ctrl.openPrintOption()">
+                                                <i class="fa fa-file-pdf-o"></i> Cetak
+                                            </a>
+                                        </div>
+                                        <div class="col-xs-9 col-sm-5 col-md-5 col-lg-6">
+                                            <select name="dt_basic_length" aria-controls="dt_basic" class="form-control" ng-model="ctrl.paging.max"
+                                                    ng-change="ctrl.filter()" style="float:right; width:15%;" to-number>
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                                <option value="500">500</option>
+                                                <option value="1000">1000</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped table-condensed table-hover smart-form has-tickbox">
+                                        <thead>
+                                            <tr style="color:black;">
+                                                <th style="text-align: center; width: 1%;">
+                                                    <input type="checkbox" ng-model="ctrl.checkedAll" ng-click="ctrl.toggleCheckAll()" ng-true-value="true" ng-false-value="false" />
+                                                </th>
+                                                <th style="text-align: center; width: 8%;">Spb</th>
+                                                <th style="text-align: center; width: 10%;">Pengirim</th>
+                                                <th style="text-align: center; width: 8%;">Harga</th>
+                                                <th style="text-align: center; width: 8%;">No Relasi</th>
+                                                <th style="text-align: center; width: 8%;">Tgl Terima</th>
+                                                <th style="text-align: center; width: 3%;">Ybs</th>
+                                                <th style="text-align: center; width: 3%;">Diterima</th>
+                                                <th style="text-align: center; width: 3%;">TTD</th>
+                                                <th style="text-align: center; width: 3%;">Cap</th>
+                                                <th style="text-align: center; width: 4%;">Kwitansi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-show="ctrl.loadingData">
+                                                <td style="text-align: center; margin: 10px 0px;" colspan="100">
+                                                    <img src="../assets/img/ajax-loader.gif">
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat="entity in ctrl.entities" style="color:black;" ng-show="!ctrl.loadingData">
+                                                <td style="text-align: center;">
+                                                    <input type="checkbox" ng-model="entity.checked" />
+                                                </td>
+                                                <td> {{entity.spbNumber}} </td>
+                                                <td> {{entity.sender.name}} </td>
+                                                <td> {{entity.cost.total | currency: 'Rp ' : 2}} </td>
+                                                <td> {{entity.returnInfo.relationCode}} </td>
+                                                <td> {{entity.returnInfo.created.date | date:'dd-MM-yyyy'}} </td>
+                                                <td> {{entity.returnInfo.concernedPerson}} </td>
+
+                                                <td style="text-align:center;" ng-if="entity.returnInfo.accepted">
+                                                    <i class="fa fa-check" />
+                                                </td>
+                                                <td style="text-align:center;" ng-if="!entity.returnInfo.accepted">
+                                                    <i class="fa fa-remove" />
+                                                </td>
+                                                <td style="text-align:center;" ng-if="entity.returnInfo.signed">
+                                                    <i class="fa fa-check" />
+                                                </td>
+                                                <td style="text-align:center;" ng-if="!entity.returnInfo.signed">
+                                                    <i class="fa fa-remove" />
+                                                </td>
+                                                <td style="text-align:center;" ng-if="entity.returnInfo.stamped">
+                                                    <i class="fa fa-check" />
+                                                </td>
+                                                <td style="text-align:center;" ng-if="!entity.returnInfo.stamped">
+                                                    <i class="fa fa-remove" />
+                                                </td>
+                                                <td style="text-align:center;" ng-if="entity.returnInfo.receipt">
+                                                    <i class="fa fa-check" />
+                                                </td>
+                                                <td style="text-align:center;" ng-if="!entity.returnInfo.receipt">
+                                                    <i class="fa fa-remove" />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div ng-show="ctrl.activeReport == 'Belum Terkirim'">
+                                <div class="widget-body-toolbar" ng-show="ctrl.showToolbar">
+                                    <form class="smart-form">
+                                        <legend>Filter data</legend>
+                                        <fieldset>
+                                            <div class="row">
+                                                <section class="col col-sm-12 col-md-12 col-lg-6">
+                                                    <label class="input">
+                                                        <input type="text" placeholder="Spb" ng-model="ctrl.filters.spbNumber" />
+                                                    </label>
+                                                </section>
+
+                                                <section class="col col-sm-12 col-md-12 col-lg-6">
+                                                    <label class="input">
+                                                        <input type="text"
+                                                               ng-model="ctrl.filters.regionSource"
+                                                               placeholder="Regional Asal"
+                                                               uib-typeahead="data as data.name for data in ctrl.suggest('region', $viewValue)"
+                                                               typeahead-min-length="2"
+                                                               typeahead-loading="regionSourceFilter" class="form-control" />
+                                                        <i ng-show="regionSourceFilter" class="glyphicon glyphicon-refresh"></i>
+                                                    </label>
+                                                </section>
+                                            
+                                                <section class="col col-sm-12 col-md-12 col-lg-6">
+                                                    <label class="input">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                            <input datepicker class="form-control" placeholder="Dari Tanggal"
+                                                                   id="from-transaction-date-delivery" type="text" ng-model="ctrl.filters.from" />
+                                                        </div>
+                                                    </label>
+                                                </section>
+                                                <section class="col col-sm-12 col-md-12 col-lg-6">
+                                                    <label class="input">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                            <input datepicker class="form-control" placeholder="Sampai Tanggal"
+                                                                   id="to-transaction-date-delivery" type="text" ng-model="ctrl.filters.to" />
+                                                        </div>
+                                                    </label>
+                                                </section>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <div class="widget-body-toolbar">
+                                    <div class="row">
+                                        <div class="col-xs-9 col-sm-5 col-md-5 col-lg-6">
+                                            <a href="#" class="btn btn-default" style="color: black;" ng-click="ctrl.filter()">
+                                                <i class="fa fa-search"></i> Cari
+                                            </a>
+                                            <a href="#" class="btn btn-default" style="color: black;" ng-click="ctrl.openPrintOption()">
+                                                <i class="fa fa-file-pdf-o"></i> Cetak
+                                            </a>
+                                        </div>
+                                        <div class="col-xs-9 col-sm-5 col-md-5 col-lg-6">
+                                            <select name="dt_basic_length" aria-controls="dt_basic" class="form-control" ng-model="ctrl.paging.max"
+                                                    ng-change="ctrl.filter()" style="float:right; width:15%;" to-number>
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                                <option value="500">500</option>
+                                                <option value="1000">1000</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped table-condensed table-hover smart-form has-tickbox">
+                                        <thead>
+                                            <tr style="color:black;">
+                                                <th style="text-align: center; width: 1%;">
+                                                    <input type="checkbox" ng-model="ctrl.checkedAll" ng-click="ctrl.toggleCheckAll()" ng-true-value="true" ng-false-value="false" />
+                                                </th>
+                                                <th style="text-align: center; width: 7%;">Spb</th>
+                                                <th style="text-align: center; width: 11%;">Pengirim</th>
+                                                <th style="text-align: center; width: 8%;">Penerima</th>
+                                                <th style="text-align: center; width: 5%;">Isi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-show="ctrl.loadingData">
+                                                <td style="text-align: center; margin: 10px 0px;" colspan="100">
+                                                    <img src="../assets/img/ajax-loader.gif">
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat="entity in ctrl.entities" style="color:black;" ng-show="!ctrl.loadingData">
+                                                <td style="text-align: center;">
+                                                    <input type="checkbox" ng-model="entity.checked" />
+                                                </td>
+                                                <td> {{entity.spbNumber}} </td>
+                                                <td> {{entity.sender[0].name}} </td>
+                                                <td> {{entity.receiver.name}}</td>
+                                                <td> {{entity.items.content}}</td>
                                             </tr>
                                         </tbody>
                                     </table>

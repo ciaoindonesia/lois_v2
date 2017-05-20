@@ -79,6 +79,16 @@ var app;
                         this.dataFunc = app.api.report.getPartnerReport;
                         this.renderFunc = app.api.reportPrint.printPartner;
                         break;
+                    case 'Belum Retur':
+                        this.functions.load = app.api.report.getUnreturned;
+                        this.dataFunc = app.api.report.getUnreturnedReport;
+                        this.renderFunc = app.api.reportPrint.printUnreturned;
+                        break;
+                    case 'Belum Terkirim':
+                        this.functions.load = app.api.report.getUndelivered;
+                        this.dataFunc = app.api.report.getUndeliveredReport;
+                        this.renderFunc = app.api.reportPrint.printUndelivered;
+                        break;
                 }
                 this.filters = {};
                 this.paging.page = 1;
@@ -93,7 +103,10 @@ var app;
                     return;
                 }
                 this.createQuery();
-                angular.extend(this.query, { "printNoPrice": this.printNoPrice });
+                if (this.activeReport === 'Rekapitulasi') {
+                    this.query['address'] = this.noPriceAddress;
+                    angular.extend(this.query, { "printNoPrice": this.printNoPrice });
+                }
                 this.loadingData = true;
                 var dataFunction = this.dataFunc(checkedEntities, this.query);
                 dataFunction.then(function (result) {

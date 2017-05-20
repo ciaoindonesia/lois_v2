@@ -329,6 +329,22 @@
         static getPartnerReport (data, query) {
             return app.http.post('/lois/api/reportData/getPartnerReport?query=' + JSON.stringify(query), JSON.stringify(data));
         }
+
+        static getUnreturned(query) {
+            return http.get('/lois/api/reportData/getUnreturned?query=' + JSON.stringify(query));
+        }
+
+        static getUnreturnedReport(data, query) {
+            return http.post('/lois/api/reportData/getUnreturnedReport?query= ' + JSON.stringify(query), JSON.stringify(data));
+        }
+
+        static getUndelivered(query: any) {
+            return http.get('/lois/api/reportData/getUndelivered?query=' + JSON.stringify(query));
+        }
+
+        static getUndeliveredReport(data: any, query: any) {
+            return http.post('/lois/api/reportData/getUndeliveredReport?query= ' + JSON.stringify(query), JSON.stringify(data));
+        }
     }
 
     export class reportPrint {
@@ -438,6 +454,24 @@
             };
 
             return app.http.post('https://lois.limassentosa.co.id/index.php/invoice', JSON.stringify(data), config);
+        }
+
+        static printUnreturned(data: any) {
+            var config = {
+                "headers": { "content-type": "application/x-www-form-urlencoded; charset=UTF-8" },
+                "responseType": "arraybuffer"
+            };
+
+            return app.http.post('https://lois.limassentosa.co.id/index.php/unreturned', JSON.stringify(data), config);
+        }
+
+        static printUndelivered(data: any) {
+            var config = {
+                "headers": { "content-type": "application/x-www-form-urlencoded; charset=UTF-8" },
+                "responseType": "arraybuffer"
+            };
+
+            return app.http.post('https://lois.limassentosa.co.id/index.php/undelivered', JSON.stringify(data), config);
         }
     }
 }
