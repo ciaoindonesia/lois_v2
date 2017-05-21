@@ -103,10 +103,8 @@ var app;
                     return;
                 }
                 this.createQuery();
-                if (this.activeReport === 'Rekapitulasi') {
-                    this.query['address'] = this.noPriceAddress;
+                if (this.activeReport === 'Rekapitulasi')
                     angular.extend(this.query, { "printNoPrice": this.printNoPrice });
-                }
                 this.loadingData = true;
                 var dataFunction = this.dataFunc(checkedEntities, this.query);
                 dataFunction.then(function (result) {

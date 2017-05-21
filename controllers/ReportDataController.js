@@ -281,13 +281,12 @@ Controller.prototype.getRecapitulationsReport = function (viewModels, query, use
         "driver": null,
         "car": null,
         "printNoPrice": viewModels[0].noPrice,
-        "address": query['address'] ? query['address'] : null,
         "headers": [],
         "rows": []
     };
 
     if (query.printNoPrice)
-        result.headers = ['NO', 'SPB NO.', 'SENDER', 'RECEIVER', 'CONTENT', 'QTY', 'TOTAL QTY', 'WEIGHT', 'PAYMENT', 'LIMAS', 'RELATION', 'DATE', 'DESTINATION'];
+        result.headers = ['NO', 'SPB NO.', 'SENDER', 'RECEIVER', 'CONTENT', 'QTY', 'TOTAL QTY', 'WEIGHT', 'ALAMAT', 'PAYMENT', 'LIMAS', 'RELATION', 'DATE', 'DESTINATION'];
     else
         result.headers = ['NO', 'SPB NO.', 'SENDER', 'RECEIVER', 'CONTENT', 'QTY', 'TOTAL QTY', 'WEIGHT', 'DELIVERY', 'PAYMENT', 'LIMAS', 'RELATION', 'DATE', 'DESTINATION'];
 
@@ -344,6 +343,7 @@ Controller.prototype.getRecapitulationsReport = function (viewModels, query, use
                 "colli": viewModel.items.recapitulations.quantity,
                 "weight": viewModel.items.recapitulations.weight,
                 "price": price,
+                "address": viewModel.address,
                 "paymentMethod": paymentType.name,
                 "recapLimasColor": viewModel.items.recapitulations.limasColor,
                 "recapRelationColor": viewModel.items.recapitulations.relationColor,

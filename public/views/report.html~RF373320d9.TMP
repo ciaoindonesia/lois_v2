@@ -731,6 +731,11 @@
                                                         <input type="text" placeholder="No mobil" ng-model="ctrl.filters.vehicleNumber" />
                                                     </label>
                                                 </section>
+                                                <section class="col col-sm-12 col-md-12 col-lg-12" ng-if="ctrl.printNoPrice">
+                                                    <label class="input">
+                                                        <input type="text" placeholder="Alamat" ng-model="ctrl.noPriceAddress" />
+                                                    </label>
+                                                </section>
                                             </div>
                                         </fieldset>
                                     </form>

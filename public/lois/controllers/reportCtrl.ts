@@ -7,8 +7,7 @@
         printNoPrice: boolean;
         orientation: string;
         paper: string;
-        noPriceAddress: string;
-
+  
         static $inject = ['$scope', 'Notification'];
 
         constructor($scope, Notification) {
@@ -112,12 +111,9 @@
 
             this.createQuery();
 
-            if (this.activeReport === 'Rekapitulasi') {
-                this.query['address'] = this.noPriceAddress;
+            if (this.activeReport === 'Rekapitulasi') 
                 angular.extend(this.query, { "printNoPrice": this.printNoPrice });
-            }
             
-
             this.loadingData = true;
 
             var dataFunction = this.dataFunc(checkedEntities, this.query); 
