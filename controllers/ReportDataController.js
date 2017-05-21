@@ -1052,7 +1052,7 @@ Controller.prototype.getPartnerReport = function (viewModels, query, user) {
 Controller.prototype.getUnreturned = function (query) {
     var limit = query['limit'] ? query['limit'] : 10;
     var skip = query['skip'] ? query['skip'] : 0;
-    var parameters = { "regions.destination": ObjectId(query['region']), "returned": false };
+    var parameters = { "regions.destination": ObjectId(query['region']), "returned": false, "confirmed": false };
 
     if (query['spbNumber'])
         parameters['spbNumber'] = new RegExp(query['spbNumber'], 'i');
@@ -1072,7 +1072,16 @@ Controller.prototype.getUnreturned = function (query) {
     if (query['from'] && query['to'])
         parameters['date'] = { "$gte": date.createLower(query['from']), "$lte": date.createUpper(query['to']) };
 
-    return schemas.shippings.find(parameters).sort({ "number": -1 }).populate('sender destination').skip(skip).limit(limit).exec();
+    return schemas.shippings.aggregate([
+        { "$match": parameters },
+        { "$match": { "items": { "$elemMatch": { "status": "Terkirim" } } } },
+        { "$lookup": { "from": "clients", "localField": "sender", "foreignField": "_id", "as": "sender" } },
+        { "$lookup": { "from": "locations", "localField": "destination", "foreignField": "_id", "as": "destination" } },
+        { "$lookup": { "from": "regions", "localField": "regions.destination", "foreignField": "_id", "as": "destRegion" } },
+        { "$lookup": { "from": "paymentTypes", "localField": "payment.type", "foreignField": "_id", "as": "paymentType" } },
+        { "$skip": skip },
+        { "$limit": limit }
+    ]);
 }
 
 Controller.prototype.getUnreturnedReport = function (viewModels, query, user) {
@@ -1082,62 +1091,26 @@ Controller.prototype.getUnreturnedReport = function (viewModels, query, user) {
         "token": "a24ef5a6-cc98-41bd-a3b4-5f5b9f878332",
         "location": user.location.name,
         "user": user.name,
-        "date": query['returnDate'] ? query['returnDate'] : null,
-        "headers": ['NO', 'SPB NO.', 'SENDER', 'DELIVERY', 'RELATION NO.', 'LIMAS', 'RELATION', 'DRIVER', 'RECEIVED DATE', 'RECEIVED BY', 'SIGN', 'STAMP', 'RECEIPT'],
+        "date": new Date(),
+        "headers": ['NO', 'SPB NO.', 'SENDER', 'RECEIVER', 'DESTINATION', 'REGION', 'QTY', 'WEIGHT', 'DELIVERY', 'PAYMENT', 'DATE'],
         "rows": []
     };
 
     return co(function* () {
-        var destinations = [];
-
-        var payment_method = yield schemas.paymentTypes.findOne({ "_id": ObjectId(query['paymentType']) }).exec();
-
-        if (payment_method)
-            result['paymentMethod'] = payment_method.name;
-
         yield* _co.coEach(viewModels, function* (viewModel) {
-
-            var drivers = [];
-            var vehicleNumbers = [];
-            var deliveryDates = [];
-
-            destinations.push(viewModel.destination.name);
-
-            yield* _co.coEach(viewModel.items, function* (item) {
-
-                var deliveries = _.filter(item.deliveries, function (delivery) {
-                    return delivery.quantity > 0;
-                });
-
-                yield* _co.coEach(deliveries, function* (delivery) {
-                    var driver = yield schemas.drivers.findOne({ _id: ObjectId(delivery.driver) });
-
-                    if (driver)
-                        drivers.push(driver.name);
-
-                    vehicleNumbers.push(delivery.vehicleNumber);
-                    deliveryDates.push(delivery.date ? delivery.date : delivery.createdDate);
-                });
-            });
-
             result.rows.push({
                 "spbNumber": viewModel.spbNumber,
-                "sender": viewModel.sender.name,
+                "sender": viewModel.sender[0].name,
+                "receiver": viewModel.receiver.name,
+                "destination": viewModel.destination[0].name,
+                "region": viewModel.destRegion[0].name,
+                "qty": viewModel.colli,
+                "weight": viewModel.weight,
                 "price": viewModel.cost.total,
-                "limasColor": viewModel.returnInfo.limasColor,
-                "relationColor": viewModel.returnInfo.relationColor,
-                "partnerNumber": viewModel.returnInfo.relationCode,
-                "driver": drivers.length > 0 ? drivers[drivers.length - 1] : " ",
-                "car": vehicleNumbers.length > 0 ? vehicleNumbers.join(', ') : " ",
-                "deliveryDate": deliveryDates.length > 0 ? deliveryDates.join(', ') : " ",
-                "signature": viewModel.returnInfo.signed ? 'v' : 'x',
-                "stamp": viewModel.returnInfo.stamped ? 'v' : 'x',
-                "receivedBy": viewModel.returnInfo.concernedPerson,
-                "porterReceipt": viewModel.returnInfo.receipt ? 'v' : 'x'
+                "paymentType": viewModel.paymentType[0].name,
+                "date": viewModel.date
             });
         });
-
-        result['destination'] = destinations;
 
         return result;
     });
@@ -1183,6 +1156,8 @@ Controller.prototype.getUndelivered = function (query) {
         { "$unwind": "$items.deliveries" },
         { "$match": deliveryParameters },
         { "$lookup": { "from": "clients", "localField": "sender", "foreignField": "_id", "as": "sender" } },
+        { "$lookup": { "from": "locations", "localField": "destination", "foreignField": "_id", "as": "destination" } },
+        { "$lookup": { "from": "regions", "localField": "regions.destination", "foreignField": "_id", "as": "destRegion" } },
         { "$lookup": { "from": "paymentTypes", "localField": "payment.type", "foreignField": "_id", "as": "paymentType" } },
         { "$lookup": { "from": "drivers", "localField": "items.deliveries.driver", "foreignField": "_id", "as": "driver" } },
         { "$skip": skip },
@@ -1198,72 +1173,25 @@ Controller.prototype.getUndeliveredReport = function (viewModels, query, user) {
         "token": "a24ef5a6-cc98-41bd-a3b4-5f5b9f878332",
         "location": user.location.name,
         "user": user.name,
-        "date": viewModels[0].items.deliveries.date ? viewModels[0].items.deliveries.date : viewModels[0].items.deliveries.createdDate ? viewModels[0].items.deliveries.createdDate : '',
-        "driver": null,
-        "deliveryDate": query['deliveryDate'],
-        "carFilter": query['vehicleNumber'],
-        "car": null,
-        "headers": ['NO', 'SPB NO.', 'SENDER', 'RECEIVER', 'ADDRESS', 'PHONE', 'CONTENT', 'DELIVERY', 'PAYMENT', 'REMARKS'],
+        "date": new Date(),
+        "headers": ['NO', 'SPB NO.', 'SENDER', 'RECEIVER', 'TUJUAN', 'REGION', 'CONTENT', 'QTY', 'WEIGHT', 'DELIVERY', 'PAYMENT'],
         "rows": [],
-        "destinations": []
     };
 
     return co(function* () {
-
-        if (query['driver']) {
-            var driverFilter = yield schemas.drivers.findOne({ "_id": ObjectId(query['driver']) }).exec();
-            result['driverFilter'] = driverFilter.name;
-        }
-        else
-            result['driverFilter'] = '';
-
         yield* _co.coEach(viewModels, function* (viewModel) {
-            var driver = yield schemas.drivers.findOne({ _id: ObjectId(viewModel.items.deliveries.driver) });
-
-            var price = 0;
-            if (viewModel.cost.expeditionType == 'include') {
-                var baseprice = (viewModel.cost.worker / viewModel.itemCount) + ((viewModel.items.cost.shipping / viewModel.items.colli.quantity) * viewModel.items.deliveries.quantity);
-                var ppn = baseprice * viewModel.cost.ppn;
-                if (viewModel.cost.pph == 0.98)
-                    price = (baseprice / viewModel.cost.pph) + ppn;
-                else {
-                    var pph = baseprice * viewModel.cost.pph;
-                    price = baseprice + pph + ppn;
-                }
-            }
-            else if (viewModel.cost.expeditionType == 'reimburse') {
-                var baseprice = (viewModel.cost.expedition / viewModel.itemCount) + (viewModel.cost.worker / viewModel.itemCount) + ((viewModel.items.cost.shipping / viewModel.items.colli.quantity) * viewModel.items.deliveries.quantity);
-                var ppn = baseprice * viewModel.cost.ppn;
-                if (viewModel.cost.pph == 0.98)
-                    price = (baseprice / viewModel.cost.pph) + ppn;
-                else {
-                    var pph = baseprice * viewModel.cost.pph;
-                    price = baseprice + pph + ppn;
-                }
-            }
-
-            if (driver)
-                result.driver = driver.name;
-
-            result.car = viewModel.items.deliveries.vehicleNumber;
             result.rows.push({
                 "spbNumber": viewModel.spbNumber,
                 "sender": viewModel.sender[0].name,
                 "receiver": viewModel.receiver.name,
-                "receiverAddress": viewModel.receiver.address,
-                "receiverContact": viewModel.receiver.contact,
+                "destination": viewModel.destination[0].name,
+                "region": viewModel.destRegion[0].name,
                 "content": viewModel.items.content,
-                "price": price,
-                "notes": '',
+                "qty": viewModel.items.colli.quantity,
+                "weight": viewModel.items.dimensions.weight,
+                "price": viewModel.items.cost.shipping,
                 "paymentMethod": viewModel.paymentType[0].name
             });
-
-            var destination = yield schemas.locations.findOne({ _id: ObjectId(viewModel.destination) });
-            if (destination)
-                result.destinations.push(
-                    destination.name
-                );
-
         });
 
         return result;

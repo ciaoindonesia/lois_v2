@@ -1552,33 +1552,7 @@
                                                         <i ng-show="regionSourceFilter" class="glyphicon glyphicon-refresh"></i>
                                                     </label>
                                                 </section>
-                                                <section class="col col-sm-12 col-md-12 col-lg-4">
-                                                    <label class="input">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                            <input datepicker class="form-control" placeholder="Tanggal retur"
-                                                                   id="return-date" type="text" ng-model="ctrl.filters.returnDate" />
-                                                        </div>
-                                                    </label>
-                                                </section>
-                                                <section class="col col-sm-12 col-md-12 col-lg-4">
-                                                    <label class="input">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                            <input datepicker class="form-control" placeholder="Dari Tanggal"
-                                                                   id="from-transaction-date-return" type="text" ng-model="ctrl.filters.from" />
-                                                        </div>
-                                                    </label>
-                                                </section>
-                                                <section class="col col-sm-12 col-md-12 col-lg-4">
-                                                    <label class="input">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                            <input datepicker class="form-control" placeholder="Sampai Tanggal"
-                                                                   id="to-transaction-date-return" type="text" ng-model="ctrl.filters.to" />
-                                                        </div>
-                                                    </label>
-                                                </section>
+
                                             </div>
                                         </fieldset>
                                     </form>
@@ -1615,14 +1589,14 @@
                                                 </th>
                                                 <th style="text-align: center; width: 8%;">Spb</th>
                                                 <th style="text-align: center; width: 10%;">Pengirim</th>
-                                                <th style="text-align: center; width: 8%;">Harga</th>
-                                                <th style="text-align: center; width: 8%;">No Relasi</th>
-                                                <th style="text-align: center; width: 8%;">Tgl Terima</th>
-                                                <th style="text-align: center; width: 3%;">Ybs</th>
-                                                <th style="text-align: center; width: 3%;">Diterima</th>
-                                                <th style="text-align: center; width: 3%;">TTD</th>
-                                                <th style="text-align: center; width: 3%;">Cap</th>
-                                                <th style="text-align: center; width: 4%;">Kwitansi</th>
+                                                <th style="text-align: center; width: 8%;">Penerima</th>
+                                                <th style="text-align: center; width: 8%;">Tujuan</th>
+                                                <th style="text-align: center; width: 8%;">Regional</th>
+                                                <th style="text-align: center; width: 3%;">QTY</th>
+                                                <th style="text-align: center; width: 3%;">Weight</th>
+                                                <th style="text-align: center; width: 3%;">Harga</th>
+                                                <th style="text-align: center; width: 3%;">Pembayaran</th>
+                                                <th style="text-align: center; width: 4%;">Tanggal</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1636,36 +1610,15 @@
                                                     <input type="checkbox" ng-model="entity.checked" />
                                                 </td>
                                                 <td> {{entity.spbNumber}} </td>
-                                                <td> {{entity.sender.name}} </td>
+                                                <td> {{entity.sender[0].name}} </td>
+                                                <td> {{entity.receiver.name}} </td>
+                                                <td> {{entity.destination[0].name}} </td>
+                                                <td> {{entity.destRegion[0].name}} </td>
+                                                <td> {{entity.colli}} </td>
+                                                <td> {{entity.weight}} </td>
                                                 <td> {{entity.cost.total | currency: 'Rp ' : 2}} </td>
-                                                <td> {{entity.returnInfo.relationCode}} </td>
-                                                <td> {{entity.returnInfo.created.date | date:'dd-MM-yyyy'}} </td>
-                                                <td> {{entity.returnInfo.concernedPerson}} </td>
-
-                                                <td style="text-align:center;" ng-if="entity.returnInfo.accepted">
-                                                    <i class="fa fa-check" />
-                                                </td>
-                                                <td style="text-align:center;" ng-if="!entity.returnInfo.accepted">
-                                                    <i class="fa fa-remove" />
-                                                </td>
-                                                <td style="text-align:center;" ng-if="entity.returnInfo.signed">
-                                                    <i class="fa fa-check" />
-                                                </td>
-                                                <td style="text-align:center;" ng-if="!entity.returnInfo.signed">
-                                                    <i class="fa fa-remove" />
-                                                </td>
-                                                <td style="text-align:center;" ng-if="entity.returnInfo.stamped">
-                                                    <i class="fa fa-check" />
-                                                </td>
-                                                <td style="text-align:center;" ng-if="!entity.returnInfo.stamped">
-                                                    <i class="fa fa-remove" />
-                                                </td>
-                                                <td style="text-align:center;" ng-if="entity.returnInfo.receipt">
-                                                    <i class="fa fa-check" />
-                                                </td>
-                                                <td style="text-align:center;" ng-if="!entity.returnInfo.receipt">
-                                                    <i class="fa fa-remove" />
-                                                </td>
+                                                <td> {{entity.paymentType[0].name}} </td>
+                                                <td> {{entity.date | date: 'dd-MM-yyyy'}} </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1693,25 +1646,6 @@
                                                                typeahead-min-length="2"
                                                                typeahead-loading="regionSourceFilter" class="form-control" />
                                                         <i ng-show="regionSourceFilter" class="glyphicon glyphicon-refresh"></i>
-                                                    </label>
-                                                </section>
-                                            
-                                                <section class="col col-sm-12 col-md-12 col-lg-6">
-                                                    <label class="input">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                            <input datepicker class="form-control" placeholder="Dari Tanggal"
-                                                                   id="from-transaction-date-delivery" type="text" ng-model="ctrl.filters.from" />
-                                                        </div>
-                                                    </label>
-                                                </section>
-                                                <section class="col col-sm-12 col-md-12 col-lg-6">
-                                                    <label class="input">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                            <input datepicker class="form-control" placeholder="Sampai Tanggal"
-                                                                   id="to-transaction-date-delivery" type="text" ng-model="ctrl.filters.to" />
-                                                        </div>
                                                     </label>
                                                 </section>
                                             </div>
@@ -1751,7 +1685,13 @@
                                                 <th style="text-align: center; width: 7%;">Spb</th>
                                                 <th style="text-align: center; width: 11%;">Pengirim</th>
                                                 <th style="text-align: center; width: 8%;">Penerima</th>
+                                                <th style="text-align: center; width: 8%;">Tujuan</th>
+                                                <th style="text-align: center; width: 8%;">Regional</th>
                                                 <th style="text-align: center; width: 5%;">Isi</th>
+                                                <th style="text-align: center; width: 8%;">QTY</th>
+                                                <th style="text-align: center; width: 8%;">Weight</th>
+                                                <th style="text-align: center; width: 8%;">Harga</th>
+                                                <th style="text-align: center; width: 8%;">Payment</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1767,7 +1707,13 @@
                                                 <td> {{entity.spbNumber}} </td>
                                                 <td> {{entity.sender[0].name}} </td>
                                                 <td> {{entity.receiver.name}}</td>
+                                                <td> {{entity.destination[0].name}}</td>
+                                                <td> {{entity.destRegion[0].name}}</td>
                                                 <td> {{entity.items.content}}</td>
+                                                <td> {{entity.items.colli.quantity}}</td>
+                                                <td> {{entity.items.dimensions.weight}}</td>
+                                                <td> {{entity.items.cost.shipping  | currency: 'Rp ' : 2}}</td>
+                                                <td> {{entity.paymentType[0].name}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
