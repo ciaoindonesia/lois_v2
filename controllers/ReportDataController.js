@@ -343,7 +343,7 @@ Controller.prototype.getRecapitulationsReport = function (viewModels, query, use
                 "colli": viewModel.items.recapitulations.quantity,
                 "weight": viewModel.items.recapitulations.weight,
                 "price": price,
-                "address": viewModel.address,
+                "address": viewModel.receiver.address,
                 "paymentMethod": paymentType.name,
                 "recapLimasColor": viewModel.items.recapitulations.limasColor,
                 "recapRelationColor": viewModel.items.recapitulations.relationColor,

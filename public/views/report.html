@@ -804,7 +804,7 @@
                                                 <td> {{entity.items.recapitulations.createdDate | date:'dd-MM-yyyy'}} </td>
                                                 <td> {{entity.trainType[0].name}} </td>
                                                 <td ng-if="ctrl.printNoPrice">
-                                                    <input type="text" class="form-control" ng-model="entity.address" />
+                                                    {{entity.receiver.address}}
                                                 </td>
                                             </tr>
                                         </tbody>
