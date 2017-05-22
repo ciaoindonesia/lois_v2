@@ -1117,49 +1117,48 @@ Controller.prototype.getUnreturnedReport = function (viewModels, query, user) {
 }
 
 Controller.prototype.getUndelivered = function (query) {
+
     var limit = query['limit'] ? query['limit'] : 10;
     var skip = query['skip'] ? query['skip'] : 0;
-    var parameters = { "regions.destination": ObjectId(query['region']) };
-    var deliveryParameters = { "items.status": 'Terekap', "confirmed": false, "returned": false };
+    //modified pekalongan and tegal
+    var parameters = { "$or": [{ "regions.destination": ObjectId(query['region']) }, { "$and": [{ "regions.destination": ObjectId("5804f7185b195d4f4e5ad9b7") }, { "regions.source": ObjectId(query['region']) }] }, { "$and": [{ "regions.destination": ObjectId("5804f7235b195d4f4e5ad9b8") }, { "regions.source": ObjectId(query['region']) }] }] };
+
+    var recapParameters = {};
 
     if (query['spbNumber'])
         parameters['spbNumber'] = new RegExp(query['spbNumber'], 'i');
 
-    if (query['destination'])
-        parameters['destination'] = ObjectId(query['destination']);
+    if (query['regionDest'])
+        parameters['regions.destination'] = ObjectId(query['regionDest']);
 
     if (query['regionSource'])
         parameters['regions.source'] = ObjectId(query['regionSource']);
 
-    if (query['regionDest'])
-        parameters['regions.destination'] = ObjectId(query['regionDest']);
+    if (query['destination'])
+        parameters['destination'] = ObjectId(query['destination']);
 
     if (query['from'] && query['to'])
         parameters['date'] = { "$gte": date.createLower(query['from']), "$lte": date.createUpper(query['to']) };
 
-    if (query['deliveryCode'])
-        deliveryParameters['items.deliveries.deliveryCode'] = new RegExp(query['deliveryCode'], 'i');
-
-    if (query['vehicleNumber'])
-        deliveryParameters['items.deliveries.vehicleNumber'] = query['vehicleNumber'];
-
     if (query['driver'])
-        deliveryParameters['items.deliveries.driver'] = ObjectId(query['driver'])
+        recapParameters['items.recapitulations.driver'] = ObjectId(query['driver']);
 
-    if (query['deliveryDate'])
-        deliveryParameters['items.deliveries.updatedDate'] = { "$gte": date.createLower(query['deliveryDate']), "$lte": date.createUpper(query['deliveryDate']) };
+    if (query['recapDate'])
+        recapParameters['items.recapitulations.date'] = { "$gte": date.createLower(query['recapDate']), "$lte": date.createUpper(query['recapDate']) };
 
     return schemas.shippings.aggregate([
         { "$match": parameters },
+        { "$match": { "items": { "$elemMatch": { "recapitulations": { "$elemMatch": { "available": { "$gt": 0 } } } } } } },
         { "$sort": { "number": -1 } },
         { "$unwind": "$items" },
-        { "$unwind": "$items.deliveries" },
-        { "$match": deliveryParameters },
+        { "$unwind": "$items.recapitulations" },
+        { "$match": { "items.recapitulations.available": { "$gt": 0 } } },
         { "$lookup": { "from": "clients", "localField": "sender", "foreignField": "_id", "as": "sender" } },
         { "$lookup": { "from": "locations", "localField": "destination", "foreignField": "_id", "as": "destination" } },
         { "$lookup": { "from": "regions", "localField": "regions.destination", "foreignField": "_id", "as": "destRegion" } },
         { "$lookup": { "from": "paymentTypes", "localField": "payment.type", "foreignField": "_id", "as": "paymentType" } },
         { "$lookup": { "from": "drivers", "localField": "items.deliveries.driver", "foreignField": "_id", "as": "driver" } },
+        { "$match": recapParameters },
         { "$skip": skip },
         { "$limit": limit }
     ]).exec();
