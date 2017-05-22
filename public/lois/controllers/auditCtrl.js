@@ -10,10 +10,9 @@ var app;
         var auditCtrl = (function (_super) {
             __extends(auditCtrl, _super);
             function auditCtrl($scope, Notification) {
-                var _this = _super.call(this, Notification) || this;
-                _this.functions.load = app.api.audit.getAll;
-                _this.filter();
-                return _this;
+                _super.call(this, Notification);
+                this.functions.load = app.api.audit.getAll;
+                this.filter();
             }
             auditCtrl.prototype.process = function (status, entity) {
                 var ctrl = this;
@@ -28,9 +27,9 @@ var app;
                     ctrl.loadingData = false;
                 });
             };
+            auditCtrl.$inject = ['$scope', 'Notification'];
             return auditCtrl;
         }(controllers.baseCtrl));
-        auditCtrl.$inject = ['$scope', 'Notification'];
         app.lois.controller('auditCtrl', auditCtrl);
     })(controllers = app.controllers || (app.controllers = {}));
 })(app || (app = {}));

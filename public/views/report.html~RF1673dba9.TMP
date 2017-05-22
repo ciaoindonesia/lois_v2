@@ -251,7 +251,7 @@
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                                             <input datepicker class="form-control" placeholder="Tanggal Transfer Dari"
-                                                                   id="transfer-date-from" type="text" ng-model="ctrl.filters.transferDateFrom" />
+                                                                   id="transfer-date" type="text" ng-model="ctrl.filters.transferDateFrom" />
                                                         </div>
                                                     </label>
                                                 </section>
@@ -260,7 +260,7 @@
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                                             <input datepicker class="form-control" placeholder="Tanggal Transfer Sampai"
-                                                                   id="transfer-date-to" type="text" ng-model="ctrl.filters.transferDateTo" />
+                                                                   id="transfer-date" type="text" ng-model="ctrl.filters.transferDateTo" />
                                                         </div>
                                                     </label>
                                                 </section>
@@ -1640,13 +1640,13 @@
                                         <legend>Filter data</legend>
                                         <fieldset>
                                             <div class="row">
-                                                <section class="col col-sm-12 col-md-12 col-lg-3">
+                                                <section class="col col-sm-12 col-md-12 col-lg-6">
                                                     <label class="input">
                                                         <input type="text" placeholder="Spb" ng-model="ctrl.filters.spbNumber" />
                                                     </label>
                                                 </section>
 
-                                                <section class="col col-sm-12 col-md-12 col-lg-3">
+                                                <section class="col col-sm-12 col-md-12 col-lg-6">
                                                     <label class="input">
                                                         <input type="text"
                                                                ng-model="ctrl.filters.regionSource"
@@ -1655,48 +1655,6 @@
                                                                typeahead-min-length="2"
                                                                typeahead-loading="regionSourceFilter" class="form-control" />
                                                         <i ng-show="regionSourceFilter" class="glyphicon glyphicon-refresh"></i>
-                                                    </label>
-                                                </section>
-
-                                                <section class="col col-sm-12 col-md-12 col-lg-3">
-                                                    <label class="input">
-                                                        <input type="text"
-                                                               ng-model="ctrl.filters.regionDest"
-                                                               placeholder="Regional Tujuan"
-                                                               uib-typeahead="data as data.name for data in ctrl.suggest('region', $viewValue)"
-                                                               typeahead-min-length="2"
-                                                               typeahead-loading="regionDestFilter" class="form-control" />
-                                                        <i ng-show="regionDestFilter" class="glyphicon glyphicon-refresh"></i>
-                                                    </label>
-                                                </section>
-                                                <section class="col col-sm-12 col-md-12 col-lg-3">
-                                                    <label class="input">
-                                                        <input type="text"
-                                                               ng-model="ctrl.filters.destination"
-                                                               placeholder="Tujuan"
-                                                               uib-typeahead="data as data.name for data in ctrl.suggest('location', $viewValue)"
-                                                               typeahead-min-length="2"
-                                                               typeahead-loading="destFilter" class="form-control" />
-                                                        <i ng-show="destFilter" class="glyphicon glyphicon-refresh"></i>
-                                                    </label>
-                                                </section>
-
-                                                <section class="col col-sm-12 col-md-12 col-lg-6">
-                                                    <label class="input">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                            <input datepicker class="form-control" placeholder="Dari Tanggal"
-                                                                   id="from-transaction-date" type="text" ng-model="ctrl.filters.from" />
-                                                        </div>
-                                                    </label>
-                                                </section>
-                                                <section class="col col-sm-12 col-md-12 col-lg-6">
-                                                    <label class="input">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                            <input datepicker class="form-control" placeholder="Sampai Tanggal"
-                                                                   id="to-transaction-date" type="text" ng-model="ctrl.filters.to" />
-                                                        </div>
                                                     </label>
                                                 </section>
                                             </div>
