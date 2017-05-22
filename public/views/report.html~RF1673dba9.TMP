@@ -251,7 +251,7 @@
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                                             <input datepicker class="form-control" placeholder="Tanggal Transfer Dari"
-                                                                   id="transfer-date-from" type="text" ng-model="ctrl.filters.transferDateFrom" />
+                                                                   id="transfer-date" type="text" ng-model="ctrl.filters.transferDateFrom" />
                                                         </div>
                                                     </label>
                                                 </section>
@@ -260,7 +260,7 @@
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                                             <input datepicker class="form-control" placeholder="Tanggal Transfer Sampai"
-                                                                   id="transfer-date-to" type="text" ng-model="ctrl.filters.transferDateTo" />
+                                                                   id="transfer-date" type="text" ng-model="ctrl.filters.transferDateTo" />
                                                         </div>
                                                     </label>
                                                 </section>

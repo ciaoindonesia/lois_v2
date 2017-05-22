@@ -10,15 +10,14 @@ var app;
         var configurationCtrl = (function (_super) {
             __extends(configurationCtrl, _super);
             function configurationCtrl($scope, Notification) {
-                var _this = _super.call(this, Notification) || this;
-                _this.functions.load = app.api.configuration.getAll;
-                _this.functions.get = app.api.configuration.get;
-                _this.functions.save = app.api.configuration.save;
-                _this.functions.delete = app.api.configuration.delete;
-                _this.functions.autocomplete = app.api.autocomplete.getAll;
-                _this.init();
-                _this.onConfigChange('region');
-                return _this;
+                _super.call(this, Notification);
+                this.functions.load = app.api.configuration.getAll;
+                this.functions.get = app.api.configuration.get;
+                this.functions.save = app.api.configuration.save;
+                this.functions.delete = app.api.configuration.delete;
+                this.functions.autocomplete = app.api.autocomplete.getAll;
+                this.init();
+                this.onConfigChange('region');
             }
             configurationCtrl.prototype.init = function () {
                 var ctrl = this;
@@ -97,9 +96,9 @@ var app;
                     "prices": [0, 0, 0]
                 };
             };
+            configurationCtrl.$inject = ['$scope', 'Notification'];
             return configurationCtrl;
         }(controllers.baseCtrl));
-        configurationCtrl.$inject = ['$scope', 'Notification'];
         app.lois.controller('configurationCtrl', configurationCtrl);
     })(controllers = app.controllers || (app.controllers = {}));
 })(app || (app = {}));

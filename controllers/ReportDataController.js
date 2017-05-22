@@ -33,8 +33,8 @@ Controller.prototype.getPaid = function (query) {
     if (query['paymentDate'])
         parameters['payment.phases'] = { "$elemMatch": { "date": { "$gte": date.createLower(query['paymentDate']), "$lte": date.createUpper(query['paymentDate']) } } };
 
-    if (query['transferDate'])
-        parameters['payment.phases'] = { "$elemMatch": { "transferDate": { "$gte": date.createLower(query['transferDate']), "$lte": date.createUpper(query['transferDate']) } } };
+    if (query['transferDateFrom'] && query['transferDateTo'])
+        parameters['payment.phases'] = { "$elemMatch": { "transferDate": { "$gte": date.createLower(query['transferDateFrom']), "$lte": date.createUpper(query['transferDateTo']) } } };
 
     if (query['from'] && query['to'])
         parameters['date'] = { "$gte": date.createLower(query['from']), "$lte": date.createUpper(query['to']) };

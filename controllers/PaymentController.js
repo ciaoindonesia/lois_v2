@@ -47,7 +47,7 @@ Controller.prototype.getAll = function (query) {
         parameters['payment.status'] = query['paymentStatus'];
 
     if (query['fromTransferDate'])
-        parameters['payment.phases.transferDate'] = { "$gte": date.createLower(query['fromTransferDate']), "$lte": date.createUpper(query['fromTransferDate']) };
+        parameters['payment.phases'] = { "$elemMatch": { "transferDate": { "$gte": date.createLower(query['fromTransferDate']), "$lte": date.createUpper(query['fromTransferDate']) } } };
 
     if (query['fromInputDate'])
         parameters['payment.phases.date'] = { "$gte": date.createLower(query['fromInputDate']), "$lte": date.createUpper(query['fromInputDate']) };
