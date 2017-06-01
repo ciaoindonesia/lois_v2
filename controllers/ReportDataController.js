@@ -931,8 +931,9 @@ Controller.prototype.getPayOffReport = function (viewModels, query, user) {
             var content = contents.length > 0 ? contents.join(', ') : " ";
 
             if (query['transactionStatus'] === "Belum Terekap") {
-                totalWeight = viewModel.weight;
                 totalColli = viewModel.colli;
+                ColliAvailable = viewModel.items.colli.available;
+                totalWeight = (ColliAvailable / totalColli)*viewModel.weight;
                 content = viewModel.items.content;
             }
         
@@ -951,7 +952,10 @@ Controller.prototype.getPayOffReport = function (viewModels, query, user) {
                 "transactionDate": viewModel.date
             });
 
-            sumTotalColli += totalColli;
+            if (query['transactionStatus'] === "Belum Terekap")
+                sumTotalColli += ColliAvailable;
+            else
+                sumTotalColli += totalColli;
             sumTotalWeight += totalWeight;
             sumPrice += viewModel.cost.total;
         });
