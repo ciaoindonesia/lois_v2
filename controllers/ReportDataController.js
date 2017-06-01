@@ -873,6 +873,9 @@ Controller.prototype.getPayOff = function (query) {
     else if (query['from'] && query['to'])
         parameters['date'] = { "$gte": date.createLower(query['from']), "$lte": date.createUpper(query['to']) };
 
+    if (query['regionDest'])
+        parameters['regions.destination'] = ObjectId(query['regionDest']);
+
     if (query['transactionStatus'] === "Belum Terekap") {
         return schemas.shippings.aggregate([
             { "$match": parameters },

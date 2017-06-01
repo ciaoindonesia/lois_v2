@@ -10,14 +10,13 @@ var app;
         var reportCtrl = (function (_super) {
             __extends(reportCtrl, _super);
             function reportCtrl($scope, Notification) {
-                var _this = _super.call(this, Notification) || this;
-                _this.printNoPrice = false;
-                _this.showToolbar = true;
-                _this.orientation = 'L';
-                _this.paper = 'A4';
-                _this.functions.autocomplete = app.api.autocomplete.getAll;
-                _this.init();
-                return _this;
+                _super.call(this, Notification);
+                this.printNoPrice = false;
+                this.showToolbar = true;
+                this.orientation = 'L';
+                this.paper = 'A4';
+                this.functions.autocomplete = app.api.autocomplete.getAll;
+                this.init();
             }
             reportCtrl.prototype.init = function () {
                 var ctrl = this;
@@ -118,9 +117,9 @@ var app;
                     _this.loadingData = false;
                 });
             };
+            reportCtrl.$inject = ['$scope', 'Notification'];
             return reportCtrl;
         }(controllers.baseCtrl));
-        reportCtrl.$inject = ['$scope', 'Notification'];
         app.lois.controller('reportCtrl', reportCtrl);
     })(controllers = app.controllers || (app.controllers = {}));
 })(app || (app = {}));
