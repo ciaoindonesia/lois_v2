@@ -925,6 +925,7 @@ Controller.prototype.getPayOffReport = function (viewModels, query, user) {
         yield* _co.coEach(viewModels, function* (viewModel) {
             var totalWeight = _.sumBy(viewModel.items, 'dimensions.weight');
             var totalColli = _.sumBy(viewModel.items, 'colli.quantity');
+            var ColliAvailable = _.sumBy(viewModel.items, 'colli.available');
             var contents = _.map(viewModel.items, "content");
 
             var content = contents.length > 0 ? contents.join(', ') : " ";
@@ -943,6 +944,7 @@ Controller.prototype.getPayOffReport = function (viewModels, query, user) {
                 "destination": viewModel.destination.name ? viewModel.destination.name : viewModel.destination[0].name,
                 "content": content,
                 "totalColli": totalColli,
+                "ColliAvailable": ColliAvailable,
                 "totalWeight": totalWeight,
                 "price": viewModel.cost.total,
                 "paymentMethod": viewModel.payment.type.name ? viewModel.payment.type.name : viewModel.payment.type[0].name,
