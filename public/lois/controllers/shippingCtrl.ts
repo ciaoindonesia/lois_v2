@@ -6,6 +6,7 @@
         selectedEntity: any;
         selectedItem: any;
         printNoPrice: boolean;
+        printNoSPB: boolean;
         orientation: string;
         paper: string;
 
@@ -14,6 +15,7 @@
         constructor($scope, Notification) {
             super(Notification);
             this.printNoPrice = false;
+            this.printNoSPB = false;
             this.orientation = 'L';
             this.paper = 'A4';
             this.viewType = ViewType.shipping;
@@ -227,7 +229,8 @@
                     po_no: entity.notes.po,
                     transaction_date: entity.date,
                     note: entity.notes.shipping,
-                    noPrice: ctrl.printNoPrice
+                    noPrice: ctrl.printNoPrice,
+                    noSPB: ctrl.printNoSPB
                 };
                 viewModels.push(viewModel);
             });

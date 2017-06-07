@@ -353,7 +353,7 @@ Controller.prototype.getDataReport = function (viewModels, user) {
                 additionalCost: viewModel.noPrice ? 0 : additional,
                 sumPrice: viewModel.noPrice ? 0 : viewModel.sum_price,
                 paymentMethod: viewModel.payment_method,
-                spbNumber: viewModel.spb_no,
+                spbNumber: viewModel.noSPB ? " " : viewModel.spb_no,
                 poNumber: viewModel.po_no,
                 transactionDate: viewModel.transaction_date,
                 note: viewModel.note
